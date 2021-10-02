@@ -1,9 +1,10 @@
-#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #define FILE_PATH ("/tmp/y0u_h4v3_b33n_pwn3d")
 
-int main(int argc, char *argv[])
+void _start(void)
 {
-    FILE *file = fopen(FILE_PATH, "w");
-    return fclose(file);
+    int fd = open(FILE_PATH, O_CREAT);
+    _exit(close(fd));
 }
