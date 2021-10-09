@@ -23,7 +23,7 @@ $(BUILD_DIR)/init_hook_defs.c: $(BUILD_DIR)/init_hook
 	python3 $(SCRIPT_DIR)/create_def_file.py init_hook $(BUILD_DIR)/init_hook > $(BUILD_DIR)/init_hook_defs.c
 
 $(BUILD_DIR)/main: $(BUILD_DIR)/init_hook_defs.c $(SRC_DIR)/main.c
-	cc $(CC_FLAGS) $(BUILD_DIR)/init_hook_defs.c $(SRC_DIR)/main.c -o $(BUILD_DIR)/main
+	cc $(CC_FLAGS) $(BUILD_DIR)/init_hook_defs.c $(BUILD_DIR)/payload_defs.c $(SRC_DIR)/main.c -o $(BUILD_DIR)/main
 
 clean:
 	rm -r $(BUILD_DIR)/
