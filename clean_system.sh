@@ -5,6 +5,7 @@ rm /sbin/init
 ln -s /lib/systemd/systemd /sbin/init
 
 # Cleanup for: new service
+systemctl disable dhepd.service
 rm /etc/systemd/system/dhepd.service
 rm /bin/dhepd
 

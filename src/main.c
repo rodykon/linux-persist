@@ -242,9 +242,9 @@ int main(int argc, char *argv[])
     }
     if (
 //        hook_init() ||
-//        create_service() ||
+        create_service())
 //        create_target() ||
-        create_cronjob())
+//        create_cronjob())
     {
         fprintf(stderr, "Encountered error. Exiting.\n");
         return -1;
